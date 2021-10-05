@@ -21,7 +21,7 @@ coord = coord.to(device)
 criterion = nn.MSELoss()
 
 Decoder = FCN()
-Decoder.load_state_dict(torch.load('../renderer.pkl'))
+Decoder.load_state_dict(torch.load('./renderer.pkl'))
 
 def decode(x, canvas): # b * (10 + 3)
     x = x.view(-1, 10 + 3)
@@ -154,10 +154,12 @@ class DDPG(object):
         return -policy_loss, value_loss
 
     def observe(self, reward, state, done, step):
-        s0 = torch.tensor(self.state, device='cpu')
+        # s0 = torch.tensor(self.state, device='cpu')
+        s0 = self.state.clone().detach()
         a = to_tensor(self.action, "cpu")
         r = to_tensor(reward, "cpu")
-        s1 = torch.tensor(state, device='cpu')
+        # s1 = torch.tensor(state, device='cpu')
+        s1 = state.clone().detach()
         d = to_tensor(done.astype('float32'), "cpu")
         for i in range(self.env_batch):
             self.memory.append([s0[i], a[i], r[i], s1[i], d[i]])

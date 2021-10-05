@@ -1,7 +1,11 @@
 *.pyc
 *.py~
-
-data/
 *.pkl
+*.mp4
 
-output/*
+output
+train_log
+log
+data
+image
+.ipynb_checkpoints

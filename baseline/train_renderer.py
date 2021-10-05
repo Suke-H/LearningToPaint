@@ -1,14 +1,16 @@
 import cv2
 import torch
 import numpy as np
-
+from tqdm import tqdm
 import torch.nn as nn
 import torch.nn.functional as F
-from utils.tensorboard import TensorBoard
+# from utils.tensorboard import TensorBoard
+from torch.utils.tensorboard import SummaryWriter
 from Renderer.model import FCN
 from Renderer.stroke_gen import *
 
-writer = TensorBoard("../train_log/")
+# writer = TensorBoard("../train_log/")
+writer = SummaryWriter(log_dir="./train_log/")
 import torch.optim as optim
 
 criterion = nn.MSELoss()
@@ -23,13 +25,13 @@ step = 0
 def save_model():
     if use_cuda:
         net.cpu()
-    torch.save(net.state_dict(), "../renderer.pkl")
+    torch.save(net.state_dict(), "./renderer.pkl")
     if use_cuda:
         net.cuda()
 
 
 def load_weights():
-    pretrained_dict = torch.load("../renderer.pkl")
+    pretrained_dict = torch.load("./renderer.pkl")
     model_dict = net.state_dict()
     pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict}
     model_dict.update(pretrained_dict)
@@ -37,7 +39,10 @@ def load_weights():
 
 
 load_weights()
-while step < 500000:
+# while step < 500000:
+for step in tqdm(range(1, 2001)):
+# while step < 2000:
+
     net.train()
     train_batch = []
     ground_truth = []
@@ -57,7 +62,7 @@ while step < 500000:
     loss = criterion(gen, ground_truth)
     loss.backward()
     optimizer.step()
-    print(step, loss.item())
+    # print(step, loss.item())
     if step < 200000:
         lr = 1e-4
     elif step < 400000:
@@ -75,8 +80,9 @@ while step < 500000:
         for i in range(32):
             G = gen[i].cpu().data.numpy()
             GT = ground_truth[i].cpu().data.numpy()
-            writer.add_image("train/gen{}.png".format(i), G, step)
-            writer.add_image("train/ground_truth{}.png".format(i), GT, step)
+            writer.add_image("train/gen{}.png".format(i), G, step, dataformats='HW')
+            writer.add_image("train/ground_truth{}.png".format(i), GT, step, dataformats='HW')
     if step % 1000 == 0:
+        print(f"step: {step}, saved model")
         save_model()
-    step += 1
+    # step += 1

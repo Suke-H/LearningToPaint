@@ -116,7 +116,8 @@ img = img.reshape(1, width, width, 3)
 img = np.transpose(img, (0, 3, 1, 2))
 img = torch.tensor(img).to(device).float() / 255.
 
-os.system('mkdir output')
+# os.system('mkdir output')
+os.makedirs("outputs", exist_ok=True)
 
 with torch.no_grad():
     if args.divide != 1:

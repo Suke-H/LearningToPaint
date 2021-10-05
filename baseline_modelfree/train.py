@@ -5,11 +5,11 @@ import numpy as np
 import argparse
 from DRL.evaluator import Evaluator
 from utils.util import *
-from utils.tensorboard import TensorBoard
+# from utils.tensorboard import TensorBoard
 import time
 
 exp = os.path.abspath('.').split('/')[-1]
-writer = TensorBoard('../train_log/{}'.format(exp))
+# writer = TensorBoard('../train_log/{}'.format(exp))
 os.system('ln -sf ../train_log/{} ./log'.format(exp))
 os.system('mkdir ./model')
 
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     fenv = fastenv(args.max_step, args.env_batch, writer)
     agent = DDPG(args.batch_size, args.env_batch, args.max_step, \
                  args.tau, args.discount, args.rmsize, \
-                 writer, args.resume, args.output)
+                 None, args.resume, args.output)
     evaluate = Evaluator(args, writer)
     print('observation_space', fenv.observation_space, 'action_space', fenv.action_space)
     train(agent, fenv, evaluate)
