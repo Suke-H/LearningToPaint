@@ -24,14 +24,16 @@ class fastenv():
         for i in range(self.env_batch):
             if self.env.imgid[i] <= 10:
                 canvas = cv2.cvtColor((to_numpy(self.env.canvas[i].permute(1, 2, 0))), cv2.COLOR_BGR2RGB)
-                self.writer.add_image('{}/canvas_{}.png'.format(str(self.env.imgid[i]), str(step)), canvas, log)
+                print(self.env.canvas[i].permute(1, 2, 0).shape)
+                print(canvas.shape)
+                self.writer.add_image('{}/canvas_{}.png'.format(str(self.env.imgid[i]), str(step)), canvas, log ,dataformats='HWC')
         if step == self.max_episode_length:
             for i in range(self.env_batch):
                 if self.env.imgid[i] < 50:
                     gt = cv2.cvtColor((to_numpy(self.env.gt[i].permute(1, 2, 0))), cv2.COLOR_BGR2RGB)
                     canvas = cv2.cvtColor((to_numpy(self.env.canvas[i].permute(1, 2, 0))), cv2.COLOR_BGR2RGB)
-                    self.writer.add_image(str(self.env.imgid[i]) + '/_target.png', gt, log)
-                    self.writer.add_image(str(self.env.imgid[i]) + '/_canvas.png', canvas, log)
+                    self.writer.add_image(str(self.env.imgid[i]) + '/_target.png', gt, log, dataformats='HWC')
+                    self.writer.add_image(str(self.env.imgid[i]) + '/_canvas.png', canvas, log, dataformats='HWC')
     
     def step(self, action):
         with torch.no_grad():

@@ -38,9 +38,9 @@ def load_weights():
     net.load_state_dict(model_dict)
 
 
-load_weights()
+# load_weights()
 # while step < 500000:
-for step in tqdm(range(1, 2001)):
+for step in tqdm(range(1, 500001)):
 # while step < 2000:
 
     net.train()

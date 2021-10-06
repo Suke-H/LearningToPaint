@@ -1,5 +1,6 @@
 import sys
 import json
+from glob import glob
 import torch
 import numpy as np
 import argparse
@@ -35,10 +36,14 @@ class Paint:
     def load_data(self):
         # CelebA
         global train_num, test_num
-        for i in range(200000):
+        img_paths = glob("./data/LLD-logo-files/**")
+        # for i in range(200000):
+        for i in range(120000):
             img_id = '%06d' % (i + 1)
             try:
-                img = cv2.imread('./data/img_align_celeba/' + img_id + '.jpg', cv2.IMREAD_UNCHANGED)
+                # img = cv2.imread('./data/img_align_celeba/' + img_id + '.jpg', cv2.IMREAD_UNCHANGED)
+                # img = cv2.imread('./data/LLD-logo-files/' + img_id + '.png', cv2.IMREAD_UNCHANGED)
+                img = cv2.imread(img_paths[i], cv2.IMREAD_UNCHANGED)
                 img = cv2.resize(img, (width, width))
                 if i > 2000:                
                     train_num += 1

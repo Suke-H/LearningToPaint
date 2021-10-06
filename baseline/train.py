@@ -3,6 +3,8 @@ import cv2
 import random
 import numpy as np
 import argparse
+from tqdm import tqdm
+
 from DRL.evaluator import Evaluator
 from utils.util import *
 # from utils.tensorboard import TensorBoard
@@ -30,8 +32,9 @@ def train(agent, env, evaluate):
     tot_reward = 0.
     observation = None
     noise_factor = args.noise_factor
-    while step <= train_times:
-        step += 1
+    # while step <= train_times:
+    for step in tqdm(range(1, train_times+1)):
+        # step += 1
         episode_steps += 1
         # reset if it is the start of episode
         if observation is None:
@@ -43,7 +46,9 @@ def train(agent, env, evaluate):
         if (episode_steps >= max_step and max_step):
             if step > args.warmup:
                 # [optional] evaluate
-                if episode > 0 and validate_interval > 0 and episode % validate_interval == 0:
+                print("1st condition")
+                if episode > 0 and validate_interval > 0 and (episode+1) % validate_interval == 0:
+                    print("2nd condition")
                     reward, dist = evaluate(env, agent.select_action, debug=debug)
                     if debug: prRed('Step_{:07d}: mean_reward:{:.3f} mean_dist:{:.3f} var_dist:{:.3f}'.format(step - 1, np.mean(reward), np.mean(dist), np.var(dist)))
                     writer.add_scalar('validate/mean_reward', np.mean(reward), step)
@@ -76,6 +81,7 @@ def train(agent, env, evaluate):
             observation = None
             episode_steps = 0
             episode += 1
+            print(episode)
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Learning to Paint')

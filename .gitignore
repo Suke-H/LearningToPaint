@@ -8,4 +8,5 @@ train_log
 log
 data
 image
+renderer_
 .ipynb_checkpoints
